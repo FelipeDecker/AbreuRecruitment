@@ -23,19 +23,33 @@ namespace VAArtGalleryWebAPI.Infrastructure
             }
             else
             {
-               gallery.ArtWorksOnDisplay.Add(artWork);
+                gallery.ArtWorksOnDisplay.Add(artWork);
             }
 
             cancellationToken.ThrowIfCancellationRequested();
 
             await UpdateGalleries(galleries);
 
-            return artWork; 
+            return artWork;
         }
 
         public async Task<bool> DeleteAsync(Guid artWorkId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var galleries = await new ArtGalleryRepository(_filePath).GetAllArtGalleriesAsync(cancellationToken);
+
+            var artGallery = galleries?.FirstOrDefault(x => x.ArtWorksOnDisplay?.Any(z => z.Id.Equals(artWorkId)) == true) ?? throw new ArgumentException("unknown art gallery", nameof(artWorkId));
+
+            var artWork = artGallery.ArtWorksOnDisplay?.FirstOrDefault(x => x.Id.Equals(artWorkId)) ?? throw new ArgumentException("unknown art work", nameof(artWorkId));
+
+            artGallery.ArtWorksOnDisplay.Remove(artWork);
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await UpdateGalleries(galleries);
+
+            return true;
         }
 
         public async Task<List<ArtWork>> GetArtWorksByGalleryIdAsync(Guid artGalleryId, CancellationToken cancellationToken = default)
