@@ -2,6 +2,7 @@ using VAArtGalleryWebAPI.Application.Queries;
 using Moq;
 using VAArtGalleryWebAPI.Domain.Entities;
 using VAArtGalleryWebAPI.Domain.Interfaces;
+using VAArtGalleryWebAPI.Application.Commands;
 
 namespace VAArGalleryWebAPITest
 {
@@ -38,6 +39,13 @@ namespace VAArGalleryWebAPITest
             var r = await new GetArtGalleryArtWorksQueryHandler(InvalidGalleryArtWorksRepositoryMock().Object).Handle(new GetArtGalleryArtWorksQuery(Guid.NewGuid()), CancellationToken.None);
 
             Assert.That(r, Is.Null);
+        }
+
+        [Test]
+        public async Task Test_Returns_false_when_delete_works_from_inexisting_Id_Art_Work()
+        {
+            var r = await new DeleteArtCommandHandler(FalseGalleryArtWorksIdRepositoryMock().Object).Handle(new DeleteArtCommand(Guid.NewGuid()), CancellationToken.None);
+            Assert.That(r, Is.False);
         }
 
         [Test]
@@ -90,5 +98,12 @@ namespace VAArGalleryWebAPITest
             return mock;
         }
 
+        private Mock<IArtWorkRepository> FalseGalleryArtWorksIdRepositoryMock()
+        {
+            var mock = new Mock<IArtWorkRepository>(MockBehavior.Strict);
+
+            mock.Setup(m => m.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+            return mock;
+        }
     }
 }
