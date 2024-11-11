@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Adicionar Nova Galeria</h1>
+<div mat-dialog-content>
+    <mat-form-field>
+        <mat-label>Nome</mat-label>
+        <input matInput [(ngModel)]="newGallery.name" required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Cidade</mat-label>
+        <input matInput [(ngModel)]="newGallery.city" required>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Responsável</mat-label>
+        <input matInput [(ngModel)]="newGallery.manager" required>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancelar</button>
+    <button mat-button (click)="dialogRef.close(newGallery)">Adicionar</button>
+</div>
